@@ -47,6 +47,7 @@
 -(NSString *) encode:(NSString *)str{
 //    NSLog(@"beforeEncode:%@",str);
     NSMutableData *dataStr=[[NSMutableData alloc] initWithData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+// BlowFish's S-boxes only accept 8-bit input, so if result of (data length)%8 is not 0, then increase the length and padding it.
     if (([dataStr length]%8)!=0) {
         [dataStr increaseLengthBy:(8-[dataStr length]%8)];
     }
@@ -98,9 +99,7 @@
     if (destatus == kCCSuccess && operation==kCCDecrypt) {
         //the returned NSData takes ownership of buffer and will free it on dealloc
         return [NSMutableData dataWithBytesNoCopy:buffer length:numBytesDecrypted];
-    }else if(destatus == kCCSuccess && operation==kCCEncrypt)
-        return [NSMutableData dataWithBytesNoCopy:buffer length:numBytesDecrypted];
-    
+}    
     free(buffer); //free the buffer;
     return nil;
 }
